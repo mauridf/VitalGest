@@ -32,7 +32,6 @@
     <Folder Include="DTOs\Reports\" />
     <Folder Include="DTOs\Schedule\" />
     <Folder Include="DTOs\Search\" />
-    <Folder Include="Interfaces\" />
     <Folder Include="Mappings\" />
     <Folder Include="Services\" />
     <Folder Include="Validators\" />
