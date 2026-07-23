@@ -1,0 +1,36 @@
+## .NET
+bin/
+obj/
+*.user
+*.suo
+*.cache
+*.vs/
+.vscode/
+
+## App settings
+appsettings.*.local.json
+appsettings.Development.json
+
+## Environment
+.env
+.env.local
+
+## Uploads
+uploads/
+
+## Logs
+logs/
+*.log
+
+## OS
+.DS_Store
+Thumbs.db
+
+## Docker
+docker-compose.override.yml
+
+## Rider
+.idea/
+
+## VS Code
+.vscode/

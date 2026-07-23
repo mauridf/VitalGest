@@ -1,0 +1,36 @@
+services:
+  - type: web
+    name: vitalgest-api
+    runtime: dotnet
+    repo: https://github.com/seu-usuario/VitalGest
+    branch: main
+    buildCommand: dotnet publish src/VitalGest.Api/VitalGest.Api.csproj -c Release -o out
+    startCommand: dotnet out/VitalGest.Api.dll
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: ConnectionStrings__DefaultConnection
+        fromDatabase:
+          name: vitalgest-db
+          property: connectionString
+      - key: Redis__ConnectionString
+        fromService:
+          name: vitalgest-redis
+          type: redis
+          property: connectionString
+      - key: Jwt__Secret
+        generateValue: true
+      - key: Jwt__Issuer
+        value: VitalGest
+      - key: Jwt__Audience
+        value: vitalgest-api
+
+  - type: redis
+    name: vitalgest-redis
+    plan: free
+
+databases:
+  - name: vitalgest-db
+    plan: free
+    databaseName: vitalgest_prod
+    user: vitalgest_user

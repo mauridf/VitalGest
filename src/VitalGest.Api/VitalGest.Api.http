@@ -1,0 +1,6 @@
+@VitalGest.Api_HostAddress = http://localhost:5260
+
+GET {{VitalGest.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
