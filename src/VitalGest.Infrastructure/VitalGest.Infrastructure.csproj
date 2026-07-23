@@ -19,10 +19,16 @@
     <Folder Include="BackgroundJobs\" />
     <Folder Include="Data\Configurations\" />
     <Folder Include="Data\Context\" />
-    <Folder Include="Data\Migrations\" />
     <Folder Include="Data\Repositories\" />
     <Folder Include="DependencyInjection\" />
     <Folder Include="Services\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\..\db\migrations\*.sql">
+      <Link>db\migrations\%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <PropertyGroup>
