@@ -11,6 +11,33 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.10" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DependencyInjection\" />
+    <Folder Include="DTOs\Appointments\" />
+    <Folder Include="DTOs\Atests\" />
+    <Folder Include="DTOs\Audit\" />
+    <Folder Include="DTOs\Auth\" />
+    <Folder Include="DTOs\Clinics\" />
+    <Folder Include="DTOs\Common\" />
+    <Folder Include="DTOs\Dashboard\" />
+    <Folder Include="DTOs\Documents\" />
+    <Folder Include="DTOs\Employees\" />
+    <Folder Include="DTOs\Exams\" />
+    <Folder Include="DTOs\Financial\" />
+    <Folder Include="DTOs\Insurance\" />
+    <Folder Include="DTOs\MedicalRecords\" />
+    <Folder Include="DTOs\Notifications\" />
+    <Folder Include="DTOs\Patients\" />
+    <Folder Include="DTOs\Prescriptions\" />
+    <Folder Include="DTOs\Reports\" />
+    <Folder Include="DTOs\Schedule\" />
+    <Folder Include="DTOs\Search\" />
+    <Folder Include="Interfaces\" />
+    <Folder Include="Mappings\" />
+    <Folder Include="Services\" />
+    <Folder Include="Validators\" />
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
