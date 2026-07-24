@@ -84,11 +84,14 @@ public class TokenService : ITokenService
             ValidIssuer = _issuer,
             ValidateAudience = true,
             ValidAudience = _audience,
-            ValidateLifetime = false, // Ignora expiração para validar token expirado
+            ValidateLifetime = false,
             ClockSkew = TimeSpan.Zero
         };
 
-        var tokenHandler = new JwtSecurityTokenHandler();
+        var tokenHandler = new JwtSecurityTokenHandler
+        {
+            InboundClaimTypeMap = new Dictionary<string, string>()
+        };
 
         try
         {
