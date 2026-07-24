@@ -64,7 +64,7 @@ public class AppointmentService : IAppointmentService
             request.AppointmentDate,
             request.StartTime,
             request.EndTime,
-            ct: ct);
+            cancellationToken: ct);
 
         if (hasConflict)
             throw new BusinessRuleException("O médico já possui um agendamento neste horário.", "TIME_CONFLICT");
@@ -113,7 +113,7 @@ public class AppointmentService : IAppointmentService
             request.StartTime,
             request.EndTime,
             excludeAppointmentId: id,
-            ct: ct);
+            cancellationToken: ct);
 
         if (hasConflict)
             throw new BusinessRuleException("O médico já possui um agendamento neste horário.", "TIME_CONFLICT");

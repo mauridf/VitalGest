@@ -6,6 +6,7 @@ using VitalGest.Application.Interfaces;
 using VitalGest.Core.Entities;
 using VitalGest.Core.Enums;
 using VitalGest.Core.Exceptions;
+using System.IdentityModel.Tokens.Jwt;
 using VitalGest.Core.Interfaces;
 
 namespace VitalGest.Application.Services;
@@ -144,7 +145,7 @@ public class AuthService : IAuthService
         if (principal == null)
             throw new BusinessRuleException("Token de acesso inválido.", "INVALID_ACCESS_TOKEN");
 
-        var userIdClaim = principal.FindFirst(System.Security.Claims.JwtRegisteredClaimNames.Sub)
+        var userIdClaim = principal.FindFirst(JwtRegisteredClaimNames.Sub)
             ?? principal.FindFirst("sub");
 
         if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out var userId))
