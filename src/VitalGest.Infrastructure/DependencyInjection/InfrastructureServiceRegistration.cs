@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using StackExchange.Redis;
 using VitalGest.Application.Interfaces;
 using VitalGest.Core.Interfaces;
+using VitalGest.Infrastructure.BackgroundJobs;
 using VitalGest.Infrastructure.Data.Context;
 using VitalGest.Infrastructure.Data.Migrations;
 using VitalGest.Infrastructure.Data.Repositories;
@@ -77,6 +78,9 @@ public static class InfrastructureServiceRegistration
 
         // ===== Serviços de Infraestrutura =====
         services.AddScoped<FileStorageService>();
+
+        // ===== Quartz.NET Background Jobs =====
+        services.AddQuartzJobs();
 
         return services;
     }

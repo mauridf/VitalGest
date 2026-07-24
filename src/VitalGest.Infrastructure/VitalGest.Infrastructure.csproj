@@ -16,7 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="BackgroundJobs\" />
     <Folder Include="Data\Configurations\" />
   </ItemGroup>
 
