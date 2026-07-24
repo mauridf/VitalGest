@@ -113,10 +113,12 @@ public class ScheduleController : BaseApiController
     [HttpGet("slots")]
     [AllowAnonymous]
     [ProducesResponseType(typeof(IEnumerable<TimeSlotResponse>), 200)]
-    public async Task<IActionResult> GetAvailableSlots([FromQuery] int doctorId, [FromQuery] DateOnly date)
+    public async Task<IActionResult> GetAvailableSlots([FromQuery] int doctorId, [FromQuery] DateOnly date, [FromQuery] int? clinicId = null)
     {
-        var clinicId = GetClinicId() ?? throw new UnauthorizedAccessException("ClinicId não encontrado.");
-        var result = await _scheduleService.GetAvailableSlotsAsync(clinicId, doctorId, date);
+        clinicId ??= GetClinicId();
+        if (clinicId == null)
+            return BadRequest(new { Success = false, Message = "ClinicId é obrigatório para consulta de horários." });
+        var result = await _scheduleService.GetAvailableSlotsAsync(clinicId.Value, doctorId, date);
         return OkResponse(result);
     }
 }

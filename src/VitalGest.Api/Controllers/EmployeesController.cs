@@ -1,111 +1,72 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using VitalGest.Application.DTOs.Common;
-using VitalGest.Core.Entities;
-using VitalGest.Core.Interfaces;
+using VitalGest.Application.DTOs.Employees;
+using VitalGest.Application.Interfaces;
 
 namespace VitalGest.Api.Controllers;
 
-/// <summary>
-/// Controller de gestão de colaboradores.
-/// </summary>
 [Authorize]
 public class EmployeesController : BaseApiController
 {
-    private readonly IUnitOfWork _uow;
+    private readonly IEmployeeService _employeeService;
 
-    public EmployeesController(IUnitOfWork uow)
+    public EmployeesController(IEmployeeService employeeService)
     {
-        _uow = uow;
+        _employeeService = employeeService;
     }
 
-    /// <summary>
-    /// Lista colaboradores da clínica atual.
-    /// </summary>
     [HttpGet]
-    [ProducesResponseType(typeof(IEnumerable<object>), 200)]
+    [ProducesResponseType(typeof(PagedResponse<EmployeeResponse>), 200)]
     public async Task<IActionResult> GetAll([FromQuery] PagedRequest request)
     {
-        var clinicId = GetClinicId() ?? throw new UnauthorizedAccessException("ClinicId não encontrado no token.");
-
-        var users = await _uow.Users.GetByClinicIdAsync(clinicId, request.Page, request.PageSize);
-        return OkResponse(users);
+        var clinicId = GetClinicId() ?? throw new UnauthorizedAccessException("ClinicId não encontrado.");
+        var result = await _employeeService.GetAllAsync(clinicId, request);
+        return OkPagedResponse(result);
     }
 
-    /// <summary>
-    /// Obtém detalhes de um colaborador específico.
-    /// </summary>
     [HttpGet("{id:int}")]
-    [ProducesResponseType(typeof(object), 200)]
+    [ProducesResponseType(typeof(EmployeeResponse), 200)]
     [ProducesResponseType(404)]
     public async Task<IActionResult> GetById(int id)
     {
-        var user = await _uow.Users.GetByIdWithClinicsAsync(id)
-            ?? throw new VitalGest.Core.Exceptions.NotFoundException("Colaborador", id);
-        return OkResponse(user);
+        var clinicId = GetClinicId() ?? throw new UnauthorizedAccessException("ClinicId não encontrado.");
+        var result = await _employeeService.GetByIdAsync(id, clinicId);
+        return OkResponse(result);
     }
 
-    /// <summary>
-    /// Adiciona um colaborador à clínica.
-    /// Apenas Admin pode adicionar colaboradores.
-    /// </summary>
     [HttpPost]
     [Authorize(Policy = "AdminOnly")]
-    [ProducesResponseType(201)]
-    public async Task<IActionResult> Create([FromBody] object request)
+    [ProducesResponseType(typeof(EmployeeResponse), 201)]
+    public async Task<IActionResult> Create([FromBody] CreateEmployeeRequest request)
     {
-        // Implementação simplificada - será expandida
-        return CreatedAtAction(nameof(GetById), new { id = 1 }, new { Success = true, Message = "Colaborador adicionado." });
+        var clinicId = GetClinicId() ?? throw new UnauthorizedAccessException("ClinicId não encontrado.");
+        var result = await _employeeService.CreateAsync(clinicId, request);
+        return CreatedAtAction(nameof(GetById), new { id = result.Id }, new
+        {
+            Success = true,
+            Message = "Colaborador adicionado com sucesso.",
+            Data = result
+        });
     }
 
-    /// <summary>
-    /// Atualiza dados de um colaborador.
-    /// </summary>
     [HttpPut("{id:int}")]
     [Authorize(Policy = "AdminOnly")]
-    [ProducesResponseType(200)]
-    public async Task<IActionResult> Update(int id, [FromBody] object request)
+    [ProducesResponseType(typeof(EmployeeResponse), 200)]
+    public async Task<IActionResult> Update(int id, [FromBody] UpdateEmployeeRequest request)
     {
-        return OkResponse(new { }, "Colaborador atualizado com sucesso.");
+        var clinicId = GetClinicId() ?? throw new UnauthorizedAccessException("ClinicId não encontrado.");
+        var result = await _employeeService.UpdateAsync(id, clinicId, request);
+        return OkResponse(result, "Colaborador atualizado com sucesso.");
     }
 
-    /// <summary>
-    /// Desativa um colaborador.
-    /// </summary>
     [HttpDelete("{id:int}")]
     [Authorize(Policy = "AdminOnly")]
     [ProducesResponseType(200)]
     public async Task<IActionResult> Delete(int id)
     {
-        var user = await _uow.Users.GetByIdAsync(id)
-            ?? throw new VitalGest.Core.Exceptions.NotFoundException("Colaborador", id);
-
-        await _uow.Users.DeleteAsync(user);
-        await _uow.SaveChangesAsync();
-
-        return OkResponse(new { }, "Colaborador desativado com sucesso.");
-    }
-
-    /// <summary>
-    /// Lista médicos da clínica.
-    /// </summary>
-    [HttpGet("doctors")]
-    [ProducesResponseType(typeof(IEnumerable<object>), 200)]
-    public async Task<IActionResult> GetDoctors()
-    {
         var clinicId = GetClinicId() ?? throw new UnauthorizedAccessException("ClinicId não encontrado.");
-        var doctors = await _uow.Users.GetByClinicIdAsync(clinicId, 1, 100);
-        return OkResponse(doctors);
-    }
-
-    /// <summary>
-    /// Lista cargos disponíveis.
-    /// </summary>
-    [HttpGet("positions")]
-    [ProducesResponseType(typeof(IEnumerable<Position>), 200)]
-    public async Task<IActionResult> GetPositions()
-    {
-        var positions = await _uow.Positions.GetAllAsync();
-        return OkResponse(positions);
+        await _employeeService.DeleteAsync(id, clinicId);
+        return OkResponse(new { }, "Colaborador desativado com sucesso.");
     }
 }
