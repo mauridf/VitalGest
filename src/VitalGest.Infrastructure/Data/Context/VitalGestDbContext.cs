@@ -352,12 +352,12 @@ public class VitalGestDbContext : DbContext
                   .OnDelete(DeleteBehavior.Cascade);
 
             entity.HasOne(e => e.Doctor)
-                  .WithMany()
+                  .WithMany(u => u.Appointments)
                   .HasForeignKey(e => e.DoctorUserId)
                   .OnDelete(DeleteBehavior.Restrict);
 
             entity.HasOne(e => e.CreatedBy)
-                  .WithMany()
+                  .WithMany(u => u.AppointmentsCreated)
                   .HasForeignKey(e => e.CreatedById)
                   .OnDelete(DeleteBehavior.Restrict);
 
@@ -387,7 +387,7 @@ public class VitalGestDbContext : DbContext
             entity.HasIndex(e => new { e.DoctorUserId, e.DayOfWeek });
 
             entity.HasOne(e => e.Doctor)
-                  .WithMany()
+                  .WithMany(u => u.Schedules)
                   .HasForeignKey(e => e.DoctorUserId)
                   .OnDelete(DeleteBehavior.Restrict);
 
@@ -416,6 +416,16 @@ public class VitalGestDbContext : DbContext
                   .HasForeignKey(e => e.MedicalRecordId)
                   .OnDelete(DeleteBehavior.Cascade);
         });
+
+        modelBuilder.Entity<MedicalRecordEntry>(entity =>
+        {
+            entity.ToTable("MedicalRecordEntries");
+
+            entity.HasOne(e => e.Doctor)
+                  .WithMany(u => u.MedicalRecordEntries)
+                  .HasForeignKey(e => e.DoctorUserId)
+                  .OnDelete(DeleteBehavior.Restrict);
+        });
     }
 
     private static void ConfigureExam(ModelBuilder modelBuilder)
@@ -442,7 +452,7 @@ public class VitalGestDbContext : DbContext
                   .OnDelete(DeleteBehavior.Cascade);
 
             entity.HasOne(e => e.Doctor)
-                  .WithMany()
+                  .WithMany(u => u.Exams)
                   .HasForeignKey(e => e.DoctorUserId)
                   .OnDelete(DeleteBehavior.Restrict);
 
@@ -465,12 +475,12 @@ public class VitalGestDbContext : DbContext
             entity.Property(e => e.FileUrl).HasMaxLength(500);
 
             entity.HasOne(e => e.PerformedBy)
-                  .WithMany()
+                  .WithMany(u => u.ExamResultsPerformed)
                   .HasForeignKey(e => e.PerformedById)
                   .OnDelete(DeleteBehavior.SetNull);
 
             entity.HasOne(e => e.ReviewedBy)
-                  .WithMany()
+                  .WithMany(u => u.ExamResultsReviewed)
                   .HasForeignKey(e => e.ReviewedById)
                   .OnDelete(DeleteBehavior.SetNull);
         });
@@ -491,7 +501,7 @@ public class VitalGestDbContext : DbContext
                   .OnDelete(DeleteBehavior.Cascade);
 
             entity.HasOne(e => e.Doctor)
-                  .WithMany()
+                  .WithMany(u => u.Prescriptions)
                   .HasForeignKey(e => e.DoctorUserId)
                   .OnDelete(DeleteBehavior.Restrict);
 
@@ -530,7 +540,7 @@ public class VitalGestDbContext : DbContext
                   .OnDelete(DeleteBehavior.Cascade);
 
             entity.HasOne(e => e.Doctor)
-                  .WithMany()
+                  .WithMany(u => u.Atests)
                   .HasForeignKey(e => e.DoctorUserId)
                   .OnDelete(DeleteBehavior.Restrict);
         });
@@ -597,7 +607,7 @@ public class VitalGestDbContext : DbContext
                   .OnDelete(DeleteBehavior.SetNull);
 
             entity.HasOne(e => e.ReceivedBy)
-                  .WithMany()
+                  .WithMany(u => u.PaymentsReceived)
                   .HasForeignKey(e => e.ReceivedById)
                   .OnDelete(DeleteBehavior.SetNull);
         });
@@ -646,7 +656,7 @@ public class VitalGestDbContext : DbContext
                   .OnDelete(DeleteBehavior.SetNull);
 
             entity.HasOne(e => e.UploadedBy)
-                  .WithMany()
+                  .WithMany(u => u.DocumentsUploaded)
                   .HasForeignKey(e => e.UploadedById)
                   .OnDelete(DeleteBehavior.SetNull);
         });
@@ -666,7 +676,7 @@ public class VitalGestDbContext : DbContext
             entity.HasIndex(e => e.IsRead).HasFilter("\"IsRead\" = FALSE");
 
             entity.HasOne(e => e.User)
-                  .WithMany()
+                  .WithMany(u => u.Notifications)
                   .HasForeignKey(e => e.UserId)
                   .OnDelete(DeleteBehavior.SetNull);
         });
@@ -687,6 +697,11 @@ public class VitalGestDbContext : DbContext
             entity.HasIndex(e => e.ClinicId);
             entity.HasIndex(e => new { e.EntityType, e.EntityId });
             entity.HasIndex(e => e.CreatedAt).IsDescending();
+
+            entity.HasOne(e => e.User)
+                  .WithMany(u => u.AuditLogs)
+                  .HasForeignKey(e => e.UserId)
+                  .OnDelete(DeleteBehavior.SetNull);
         });
     }
 
@@ -721,6 +736,11 @@ public class VitalGestDbContext : DbContext
             entity.HasIndex(e => new { e.DoctorUserId, e.Date });
             entity.HasIndex(e => e.IsAvailable).HasFilter("\"IsAvailable\" = TRUE");
 
+            entity.HasOne(e => e.Doctor)
+                  .WithMany(u => u.TimeSlots)
+                  .HasForeignKey(e => e.DoctorUserId)
+                  .OnDelete(DeleteBehavior.Restrict);
+
             entity.HasOne(e => e.Schedule)
                   .WithMany(s => s.TimeSlots)
                   .HasForeignKey(e => e.ScheduleId)
@@ -745,7 +765,7 @@ public class VitalGestDbContext : DbContext
             entity.HasIndex(e => new { e.DoctorUserId, e.ExceptionDate });
 
             entity.HasOne(e => e.Doctor)
-                  .WithMany()
+                  .WithMany(u => u.ScheduleExceptions)
                   .HasForeignKey(e => e.DoctorUserId)
                   .OnDelete(DeleteBehavior.Restrict);
         });
