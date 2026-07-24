@@ -4,7 +4,6 @@
     <ProjectReference Include="..\VitalGest.Core\VitalGest.Core.csproj" />
     <ProjectReference Include="..\VitalGest.Application\VitalGest.Application.csproj" />
     <ProjectReference Include="..\VitalGest.Infrastructure\VitalGest.Infrastructure.csproj" />
-    <ProjectReference Include="..\VitalGest.CrossCutting\VitalGest.CrossCutting.csproj" />
   </ItemGroup>
 
   <!-- Copia scripts de migração para o output -->

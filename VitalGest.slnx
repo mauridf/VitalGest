@@ -3,7 +3,6 @@
     <Project Path="src/VitalGest.Api/VitalGest.Api.csproj" />
     <Project Path="src/VitalGest.Application/VitalGest.Application.csproj" />
     <Project Path="src/VitalGest.Core/VitalGest.Core.csproj" />
-    <Project Path="src/VitalGest.CrossCutting/VitalGest.CrossCutting.csproj" />
     <Project Path="src/VitalGest.Infrastructure/VitalGest.Infrastructure.csproj" />
   </Folder>
   <Folder Name="/tests/">
