@@ -6,3 +6,4 @@ public record CreateMedicalRecordEntryRequest(int PatientId, MedicalRecordEntryT
 public record MedicalRecordEntryResponse(int Id, int DoctorUserId, string DoctorName, string EntryType, string Description, bool IsConfidential, DateTime CreatedAt);
 public record MedicalRecordResponse(int Id, int PatientId, string PatientName, IEnumerable<MedicalRecordEntryResponse> Entries, DateTime CreatedAt);
 public record ClinicalSummaryResponse(string PatientName, string BloodType, string Allergies, string LastAppointment, int TotalEntries);
+public record UpdateMedicalRecordEntryRequest(string? Description = null, bool? IsConfidential = null);

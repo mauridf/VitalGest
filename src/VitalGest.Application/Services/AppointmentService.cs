@@ -234,6 +234,13 @@ public class AppointmentService : IAppointmentService
     }
 
     /// <inheritdoc />
+    public async Task<IEnumerable<AppointmentResponse>> GetByPatientAsync(int patientId, int clinicId, CancellationToken ct = default)
+    {
+        var appointments = await _uow.Appointments.GetByPatientIdAsync(patientId, clinicId, ct);
+        return _mapper.Map<IEnumerable<AppointmentResponse>>(appointments);
+    }
+
+    /// <inheritdoc />
     public async Task<IEnumerable<AppointmentResponse>> GetByDoctorAsync(
         int clinicId,
         int doctorId,

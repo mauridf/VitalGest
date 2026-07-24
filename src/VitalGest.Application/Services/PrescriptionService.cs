@@ -89,4 +89,18 @@ public class PrescriptionService : IPrescriptionService
         await _uow.Prescriptions.DeleteAsync(prescription, ct);
         await _uow.SaveChangesAsync(ct);
     }
+
+    public async Task<PrescriptionResponse> UpdateAsync(int id, int clinicId, CreatePrescriptionRequest request, CancellationToken ct = default)
+    {
+        var prescription = await _uow.Prescriptions.GetByIdWithItemsAsync(id, clinicId, ct)
+            ?? throw new NotFoundException("Prescrição", id);
+
+        prescription.Notes = request.Notes;
+
+        await _uow.Prescriptions.UpdateAsync(prescription, ct);
+        await _uow.SaveChangesAsync(ct);
+
+        _logger.LogInformation("Prescrição atualizada: {PrescriptionId}", id);
+        return _mapper.Map<PrescriptionResponse>(prescription);
+    }
 }

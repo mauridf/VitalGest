@@ -13,10 +13,20 @@ namespace VitalGest.Api.Controllers;
 public class PatientsController : BaseApiController
 {
     private readonly IPatientService _patientService;
+    private readonly IAppointmentService _appointmentService;
+    private readonly IExamService _examService;
+    private readonly IPrescriptionService _prescriptionService;
 
-    public PatientsController(IPatientService patientService)
+    public PatientsController(
+        IPatientService patientService,
+        IAppointmentService appointmentService,
+        IExamService examService,
+        IPrescriptionService prescriptionService)
     {
         _patientService = patientService;
+        _appointmentService = appointmentService;
+        _examService = examService;
+        _prescriptionService = prescriptionService;
     }
 
     /// <summary>
@@ -129,8 +139,8 @@ public class PatientsController : BaseApiController
     public async Task<IActionResult> GetAppointments(int id)
     {
         var clinicId = GetClinicId() ?? throw new UnauthorizedAccessException("ClinicId não encontrado.");
-        // Delegado para o AppointmentService
-        return OkResponse(new { PatientId = id, Appointments = new List<object>() });
+        var appointments = await _appointmentService.GetByPatientAsync(id, clinicId);
+        return OkResponse(new { PatientId = id, Appointments = appointments });
     }
 
     /// <summary>
@@ -141,7 +151,8 @@ public class PatientsController : BaseApiController
     public async Task<IActionResult> GetExams(int id)
     {
         var clinicId = GetClinicId() ?? throw new UnauthorizedAccessException("ClinicId não encontrado.");
-        return OkResponse(new { PatientId = id, Exams = new List<object>() });
+        var exams = await _examService.GetByPatientAsync(id, clinicId);
+        return OkResponse(new { PatientId = id, Exams = exams });
     }
 
     /// <summary>
@@ -152,6 +163,7 @@ public class PatientsController : BaseApiController
     public async Task<IActionResult> GetPrescriptions(int id)
     {
         var clinicId = GetClinicId() ?? throw new UnauthorizedAccessException("ClinicId não encontrado.");
-        return OkResponse(new { PatientId = id, Prescriptions = new List<object>() });
+        var prescriptions = await _prescriptionService.GetByPatientAsync(id, clinicId);
+        return OkResponse(new { PatientId = id, Prescriptions = prescriptions });
     }
 }

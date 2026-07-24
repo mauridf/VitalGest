@@ -11,4 +11,7 @@ public interface IExamService
     Task<ExamResponse> UpdateStatusAsync(int id, int clinicId, UpdateExamStatusRequest request, CancellationToken ct = default);
     Task<ExamResultResponse> AddResultAsync(int examId, int clinicId, int performedById, CreateExamResultRequest request, CancellationToken ct = default);
     Task<IEnumerable<ExamTypeResponse>> GetExamTypesAsync(CancellationToken ct = default);
+    Task<IEnumerable<ExamResponse>> GetByPatientAsync(int patientId, int clinicId, CancellationToken ct = default);
+    Task<ExamResponse> UpdateAsync(int id, int clinicId, CreateExamRequest request, CancellationToken ct = default);
+    Task<ExamResultResponse> UpdateResultAsync(int resultId, UpdateExamResultRequest request, CancellationToken ct = default);
 }

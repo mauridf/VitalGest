@@ -63,6 +63,18 @@ public class PrescriptionsController : BaseApiController
     }
 
     /// <summary>
+    /// Atualiza uma prescrição.
+    /// </summary>
+    [HttpPut("{id:int}")]
+    [ProducesResponseType(typeof(PrescriptionResponse), 200)]
+    public async Task<IActionResult> Update(int id, [FromBody] CreatePrescriptionRequest request)
+    {
+        var clinicId = GetClinicId() ?? throw new UnauthorizedAccessException("ClinicId não encontrado.");
+        var result = await _prescriptionService.UpdateAsync(id, clinicId, request);
+        return OkResponse(result, "Prescrição atualizada com sucesso.");
+    }
+
+    /// <summary>
     /// Exclui uma prescrição.
     /// Apenas o médico que a criou pode excluir.
     /// </summary>

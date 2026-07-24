@@ -11,4 +11,6 @@ public interface IFinancialService
     Task<PagedResponse<InvoiceResponse>> GetInvoicesAsync(int clinicId, PagedRequest request, CancellationToken ct = default);
     Task<InvoiceResponse> CreateInvoiceAsync(int clinicId, CreateInvoiceRequest request, CancellationToken ct = default);
     Task<InvoiceResponse> PayInvoiceAsync(int id, int clinicId, CancellationToken ct = default);
+    Task<PaymentResponse> UpdatePaymentAsync(int id, int clinicId, UpdatePaymentRequest request, CancellationToken ct = default);
+    Task<InvoiceResponse> UpdateInvoiceAsync(int id, int clinicId, UpdateInvoiceRequest request, CancellationToken ct = default);
 }

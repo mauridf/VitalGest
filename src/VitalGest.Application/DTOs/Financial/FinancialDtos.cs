@@ -6,3 +6,5 @@ public record CreatePaymentRequest(decimal Amount, PaymentMethod PaymentMethod, 
 public record PaymentResponse(int Id, decimal Amount, decimal Discount, decimal TotalAmount, DateTime PaymentDate, string PaymentMethod, string Status, int? PatientName, int Installments);
 public record CreateInvoiceRequest(int PatientId, DateOnly DueDate, decimal TotalAmount, string? Notes = null);
 public record InvoiceResponse(int Id, string InvoiceNumber, int PatientId, string PatientName, decimal TotalAmount, decimal PaidAmount, string Status, DateOnly DueDate, DateTime IssueDate);
+public record UpdatePaymentRequest(decimal Amount, PaymentMethod PaymentMethod, decimal Discount = 0, int Installments = 1, string? Notes = null);
+public record UpdateInvoiceRequest(DateOnly DueDate, decimal TotalAmount, string? Notes = null);

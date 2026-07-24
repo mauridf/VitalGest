@@ -80,4 +80,20 @@ public class MedicalRecordService : IMedicalRecordService
             record.Entries.Count
         );
     }
+
+    public async Task<MedicalRecordEntryResponse> UpdateEntryAsync(int entryId, int clinicId, UpdateMedicalRecordEntryRequest request, CancellationToken ct = default)
+    {
+        var entry = await _uow.MedicalRecordEntries.GetByIdAsync(entryId, ct)
+            ?? throw new NotFoundException("Entrada de prontuário", entryId);
+
+        if (request.Description != null)
+            entry.Description = request.Description;
+        if (request.IsConfidential.HasValue)
+            entry.IsConfidential = request.IsConfidential.Value;
+
+        await _uow.MedicalRecordEntries.UpdateAsync(entry, ct);
+        await _uow.SaveChangesAsync(ct);
+
+        return _mapper.Map<MedicalRecordEntryResponse>(entry);
+    }
 }

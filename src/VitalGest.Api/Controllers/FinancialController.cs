@@ -92,6 +92,30 @@ public class FinancialController : BaseApiController
     }
 
     /// <summary>
+    /// Atualiza um pagamento.
+    /// </summary>
+    [HttpPut("payments/{id:int}")]
+    [ProducesResponseType(typeof(PaymentResponse), 200)]
+    public async Task<IActionResult> UpdatePayment(int id, [FromBody] UpdatePaymentRequest request)
+    {
+        var clinicId = GetClinicId() ?? throw new UnauthorizedAccessException("ClinicId não encontrado.");
+        var result = await _financialService.UpdatePaymentAsync(id, clinicId, request);
+        return OkResponse(result, "Pagamento atualizado com sucesso.");
+    }
+
+    /// <summary>
+    /// Atualiza uma fatura.
+    /// </summary>
+    [HttpPut("invoices/{id:int}")]
+    [ProducesResponseType(typeof(InvoiceResponse), 200)]
+    public async Task<IActionResult> UpdateInvoice(int id, [FromBody] UpdateInvoiceRequest request)
+    {
+        var clinicId = GetClinicId() ?? throw new UnauthorizedAccessException("ClinicId não encontrado.");
+        var result = await _financialService.UpdateInvoiceAsync(id, clinicId, request);
+        return OkResponse(result, "Fatura atualizada com sucesso.");
+    }
+
+    /// <summary>
     /// Registra o pagamento de uma fatura.
     /// </summary>
     [HttpPatch("invoices/{id:int}/pay")]

@@ -62,6 +62,18 @@ public class MedicalRecordsController : BaseApiController
     }
 
     /// <summary>
+    /// Atualiza uma entrada do prontuário.
+    /// </summary>
+    [HttpPut("entries/{id:int}")]
+    [ProducesResponseType(typeof(MedicalRecordEntryResponse), 200)]
+    public async Task<IActionResult> UpdateEntry(int id, [FromBody] UpdateMedicalRecordEntryRequest request)
+    {
+        var clinicId = GetClinicId() ?? throw new UnauthorizedAccessException("ClinicId não encontrado.");
+        var result = await _medicalRecordService.UpdateEntryAsync(id, clinicId, request);
+        return OkResponse(result, "Entrada atualizada com sucesso.");
+    }
+
+    /// <summary>
     /// Obtém a timeline cronológica do paciente.
     /// </summary>
     [HttpGet("patient/{patientId:int}/timeline")]

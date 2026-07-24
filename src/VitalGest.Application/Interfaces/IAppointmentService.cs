@@ -14,4 +14,5 @@ public interface IAppointmentService
     Task<AppointmentResponse> CancelAsync(int id, int clinicId, string reason, CancellationToken ct = default);
     Task<AppointmentResponse> MarkNoShowAsync(int id, int clinicId, CancellationToken ct = default);
     Task<IEnumerable<AppointmentResponse>> GetByDoctorAsync(int clinicId, int doctorId, CancellationToken ct = default);
+    Task<IEnumerable<AppointmentResponse>> GetByPatientAsync(int patientId, int clinicId, CancellationToken ct = default);
 }

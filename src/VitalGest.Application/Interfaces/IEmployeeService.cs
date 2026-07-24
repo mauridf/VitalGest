@@ -10,4 +10,6 @@ public interface IEmployeeService
     Task<EmployeeResponse> CreateAsync(int clinicId, CreateEmployeeRequest request, CancellationToken ct = default);
     Task<EmployeeResponse> UpdateAsync(int id, int clinicId, UpdateEmployeeRequest request, CancellationToken ct = default);
     Task DeleteAsync(int id, int clinicId, CancellationToken ct = default);
+    Task<IEnumerable<EmployeeResponse>> GetDoctorsAsync(int clinicId, CancellationToken ct = default);
+    Task<IEnumerable<PositionResponse>> GetPositionsAsync(CancellationToken ct = default);
 }

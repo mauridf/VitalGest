@@ -8,4 +8,6 @@ public interface IReportService
     Task<AppointmentReportResponse> GetAppointmentReportAsync(int clinicId, DateRangeRequest request, CancellationToken ct = default);
     Task<IEnumerable<ProductionReportResponse>> GetProductionReportAsync(int clinicId, DateRangeRequest request, CancellationToken ct = default);
     Task<IEnumerable<RevenueReportResponse>> GetRevenueReportAsync(int clinicId, DateRangeRequest request, CancellationToken ct = default);
+    Task<ExamReportResponse> GetExamReportAsync(int clinicId, DateRangeRequest request, CancellationToken ct = default);
+    Task<PatientReportResponse> GetPatientReportAsync(int clinicId, DateRangeRequest request, CancellationToken ct = default);
 }

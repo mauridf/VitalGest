@@ -45,6 +45,18 @@ public class ExamsController : BaseApiController
     }
 
     /// <summary>
+    /// Atualiza dados de um exame.
+    /// </summary>
+    [HttpPut("{id:int}")]
+    [ProducesResponseType(typeof(ExamResponse), 200)]
+    public async Task<IActionResult> Update(int id, [FromBody] CreateExamRequest request)
+    {
+        var clinicId = GetClinicId() ?? throw new UnauthorizedAccessException("ClinicId não encontrado.");
+        var result = await _examService.UpdateAsync(id, clinicId, request);
+        return OkResponse(result, "Exame atualizado com sucesso.");
+    }
+
+    /// <summary>
     /// Solicita um novo exame para o paciente.
     /// </summary>
     [HttpPost]
@@ -97,10 +109,10 @@ public class ExamsController : BaseApiController
     /// </summary>
     [HttpPut("results/{id:int}")]
     [ProducesResponseType(typeof(ExamResultResponse), 200)]
-    public async Task<IActionResult> UpdateResult(int id, [FromBody] CreateExamResultRequest request)
+    public async Task<IActionResult> UpdateResult(int id, [FromBody] UpdateExamResultRequest request)
     {
-        // Nota: implementação simplificada
-        return OkResponse(new { }, "Resultado atualizado.");
+        var result = await _examService.UpdateResultAsync(id, request);
+        return OkResponse(result, "Resultado atualizado.");
     }
 
     /// <summary>

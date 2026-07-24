@@ -109,4 +109,49 @@ public class ExamService : IExamService
         var types = await _uow.ExamTypes.GetAllAsync(ct);
         return _mapper.Map<IEnumerable<ExamTypeResponse>>(types);
     }
+
+    public async Task<IEnumerable<ExamResponse>> GetByPatientAsync(int patientId, int clinicId, CancellationToken ct = default)
+    {
+        var exams = await _uow.Exams.GetByPatientIdAsync(patientId, clinicId, ct);
+        return _mapper.Map<IEnumerable<ExamResponse>>(exams);
+    }
+
+    public async Task<ExamResponse> UpdateAsync(int id, int clinicId, CreateExamRequest request, CancellationToken ct = default)
+    {
+        var exam = await _uow.Exams.GetByIdAsync(id, ct)
+            ?? throw new NotFoundException("Exame", id);
+
+        if (exam.ClinicId != clinicId)
+            throw new BusinessRuleException("Exame não pertence a esta clínica.", "WRONG_CLINIC");
+
+        _mapper.Map(request, exam);
+        exam.UpdatedAt = DateTime.UtcNow;
+
+        await _uow.Exams.UpdateAsync(exam, ct);
+        await _uow.SaveChangesAsync(ct);
+
+        _logger.LogInformation("Exame atualizado: {ExamId}", id);
+        return _mapper.Map<ExamResponse>(exam);
+    }
+
+    public async Task<ExamResultResponse> UpdateResultAsync(int resultId, UpdateExamResultRequest request, CancellationToken ct = default)
+    {
+        var results = await _uow.ExamResults.FindAsync(r => r.Id == resultId, ct);
+        var result = results.FirstOrDefault()
+            ?? throw new NotFoundException("Resultado do exame", resultId);
+
+        if (request.Summary != null)
+            result.Summary = request.Summary;
+        if (request.ResultJson != null)
+            result.ResultJson = request.ResultJson;
+        if (request.FileUrl != null)
+            result.FileUrl = request.FileUrl;
+
+        result.UpdatedAt = DateTime.UtcNow;
+        await _uow.ExamResults.UpdateAsync(result, ct);
+        await _uow.SaveChangesAsync(ct);
+
+        _logger.LogInformation("Resultado de exame atualizado: ResultId={ResultId}", resultId);
+        return _mapper.Map<ExamResultResponse>(result);
+    }
 }

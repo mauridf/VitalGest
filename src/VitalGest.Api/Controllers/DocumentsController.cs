@@ -98,4 +98,16 @@ public class DocumentsController : BaseApiController
         var result = await _documentService.GetByPatientAsync(patientId, clinicId);
         return OkResponse(result);
     }
+
+    /// <summary>
+    /// Lista documentos de um agendamento específico.
+    /// </summary>
+    [HttpGet("appointment/{appointmentId:int}")]
+    [ProducesResponseType(typeof(IEnumerable<object>), 200)]
+    public async Task<IActionResult> GetByAppointment(int appointmentId)
+    {
+        var clinicId = GetClinicId() ?? throw new UnauthorizedAccessException("ClinicId não encontrado.");
+        var result = await _documentService.GetByAppointmentAsync(appointmentId, clinicId);
+        return OkResponse(result);
+    }
 }

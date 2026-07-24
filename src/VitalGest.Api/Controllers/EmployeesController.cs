@@ -69,4 +69,21 @@ public class EmployeesController : BaseApiController
         await _employeeService.DeleteAsync(id, clinicId);
         return OkResponse(new { }, "Colaborador desativado com sucesso.");
     }
+
+    [HttpGet("doctors")]
+    [ProducesResponseType(typeof(IEnumerable<EmployeeResponse>), 200)]
+    public async Task<IActionResult> GetDoctors()
+    {
+        var clinicId = GetClinicId() ?? throw new UnauthorizedAccessException("ClinicId não encontrado.");
+        var result = await _employeeService.GetDoctorsAsync(clinicId);
+        return OkResponse(result);
+    }
+
+    [HttpGet("positions")]
+    [ProducesResponseType(typeof(IEnumerable<PositionResponse>), 200)]
+    public async Task<IActionResult> GetPositions()
+    {
+        var result = await _employeeService.GetPositionsAsync();
+        return OkResponse(result);
+    }
 }

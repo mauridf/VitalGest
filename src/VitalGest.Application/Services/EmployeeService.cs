@@ -4,6 +4,7 @@ using VitalGest.Application.DTOs.Common;
 using VitalGest.Application.DTOs.Employees;
 using VitalGest.Application.Interfaces;
 using VitalGest.Core.Entities;
+using VitalGest.Core.Enums;
 using VitalGest.Core.Exceptions;
 using VitalGest.Core.Interfaces;
 
@@ -78,5 +79,17 @@ public class EmployeeService : IEmployeeService
 
         await _uow.Users.UpdateAsync(user, ct);
         await _uow.SaveChangesAsync(ct);
+    }
+
+    public async Task<IEnumerable<EmployeeResponse>> GetDoctorsAsync(int clinicId, CancellationToken ct = default)
+    {
+        var doctors = await _uow.Users.FindAsync(u => u.ClinicUsers.Any(cu => cu.ClinicId == clinicId) && u.Role == UserRole.User, ct);
+        return _mapper.Map<IEnumerable<EmployeeResponse>>(doctors);
+    }
+
+    public async Task<IEnumerable<PositionResponse>> GetPositionsAsync(CancellationToken ct = default)
+    {
+        var positions = await _uow.Positions.FindAsync(p => p.IsActive, ct);
+        return _mapper.Map<IEnumerable<PositionResponse>>(positions);
     }
 }

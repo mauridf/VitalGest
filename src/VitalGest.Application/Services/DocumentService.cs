@@ -83,4 +83,10 @@ public class DocumentService : IDocumentService
         await _uow.Documents.DeleteAsync(doc, ct);
         await _uow.SaveChangesAsync(ct);
     }
+
+    public async Task<IEnumerable<DocumentResponse>> GetByAppointmentAsync(int appointmentId, int clinicId, CancellationToken ct = default)
+    {
+        var docs = await _uow.Documents.FindAsync(d => d.AppointmentId == appointmentId && d.ClinicId == clinicId, ct);
+        return _mapper.Map<IEnumerable<DocumentResponse>>(docs);
+    }
 }

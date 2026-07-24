@@ -123,4 +123,39 @@ public class FinancialService : IFinancialService
 
         return _mapper.Map<InvoiceResponse>(invoice);
     }
+
+    public async Task<PaymentResponse> UpdatePaymentAsync(int id, int clinicId, UpdatePaymentRequest request, CancellationToken ct = default)
+    {
+        var payment = await _uow.Payments.GetByIdAsync(id, ct)
+            ?? throw new NotFoundException("Pagamento", id);
+
+        payment.Amount = request.Amount;
+        payment.Discount = request.Discount;
+        payment.TotalAmount = request.Amount - request.Discount;
+        payment.PaymentMethod = request.PaymentMethod;
+        payment.Installments = request.Installments;
+        payment.Notes = request.Notes;
+        payment.UpdatedAt = DateTime.UtcNow;
+
+        await _uow.Payments.UpdateAsync(payment, ct);
+        await _uow.SaveChangesAsync(ct);
+
+        return _mapper.Map<PaymentResponse>(payment);
+    }
+
+    public async Task<InvoiceResponse> UpdateInvoiceAsync(int id, int clinicId, UpdateInvoiceRequest request, CancellationToken ct = default)
+    {
+        var invoice = await _uow.Invoices.GetByIdAsync(id, ct)
+            ?? throw new NotFoundException("Fatura", id);
+
+        invoice.DueDate = request.DueDate;
+        invoice.TotalAmount = request.TotalAmount;
+        invoice.Notes = request.Notes;
+        invoice.UpdatedAt = DateTime.UtcNow;
+
+        await _uow.Invoices.UpdateAsync(invoice, ct);
+        await _uow.SaveChangesAsync(ct);
+
+        return _mapper.Map<InvoiceResponse>(invoice);
+    }
 }

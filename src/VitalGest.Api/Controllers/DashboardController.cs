@@ -58,19 +58,23 @@ public class DashboardController : BaseApiController
     /// Faturamento mensal.
     /// </summary>
     [HttpGet("revenue/monthly")]
-    [ProducesResponseType(typeof(object), 200)]
+    [ProducesResponseType(typeof(decimal), 200)]
     public async Task<IActionResult> GetMonthlyRevenue()
     {
-        return OkResponse(new { MonthlyRevenue = 0 });
+        var clinicId = GetClinicId() ?? throw new UnauthorizedAccessException("ClinicId não encontrado.");
+        var revenue = await _dashboardService.GetMonthlyRevenueAsync(clinicId);
+        return OkResponse(new { MonthlyRevenue = revenue });
     }
 
     /// <summary>
     /// Novos pacientes no mês.
     /// </summary>
     [HttpGet("patients/new")]
-    [ProducesResponseType(typeof(object), 200)]
+    [ProducesResponseType(typeof(int), 200)]
     public async Task<IActionResult> GetNewPatients()
     {
-        return OkResponse(new { NewPatients = 0 });
+        var clinicId = GetClinicId() ?? throw new UnauthorizedAccessException("ClinicId não encontrado.");
+        var count = await _dashboardService.GetNewPatientsAsync(clinicId);
+        return OkResponse(new { NewPatients = count });
     }
 }

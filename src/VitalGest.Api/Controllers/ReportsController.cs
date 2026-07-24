@@ -71,9 +71,23 @@ public class ReportsController : BaseApiController
     /// Relatório de exames realizados.
     /// </summary>
     [HttpGet("exams")]
-    [ProducesResponseType(typeof(object), 200)]
+    [ProducesResponseType(typeof(ExamReportResponse), 200)]
     public async Task<IActionResult> GetExamReport([FromQuery] DateOnly startDate, [FromQuery] DateOnly endDate)
     {
-        return OkResponse(new { StartDate = startDate, EndDate = endDate, TotalExams = 0 });
+        var clinicId = GetClinicId() ?? throw new UnauthorizedAccessException("ClinicId não encontrado.");
+        var result = await _reportService.GetExamReportAsync(clinicId, new DateRangeRequest(startDate, endDate));
+        return OkResponse(result);
+    }
+
+    /// <summary>
+    /// Relatório de pacientes.
+    /// </summary>
+    [HttpGet("patients")]
+    [ProducesResponseType(typeof(PatientReportResponse), 200)]
+    public async Task<IActionResult> GetPatientReport([FromQuery] DateOnly startDate, [FromQuery] DateOnly endDate)
+    {
+        var clinicId = GetClinicId() ?? throw new UnauthorizedAccessException("ClinicId não encontrado.");
+        var result = await _reportService.GetPatientReportAsync(clinicId, new DateRangeRequest(startDate, endDate));
+        return OkResponse(result);
     }
 }
