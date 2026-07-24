@@ -1,10 +1,18 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <ItemGroup>
     <ProjectReference Include="..\VitalGest.Core\VitalGest.Core.csproj" />
     <ProjectReference Include="..\VitalGest.Application\VitalGest.Application.csproj" />
     <ProjectReference Include="..\VitalGest.Infrastructure\VitalGest.Infrastructure.csproj" />
     <ProjectReference Include="..\VitalGest.CrossCutting\VitalGest.CrossCutting.csproj" />
+  </ItemGroup>
+
+  <!-- Copia scripts de migração para o output -->
+  <ItemGroup>
+    <Content Include="..\..\db\migrations\*.sql">
+      <Link>db\migrations\%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>

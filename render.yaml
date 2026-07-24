@@ -1,14 +1,21 @@
 services:
+  # API Principal
   - type: web
     name: vitalgest-api
     runtime: dotnet
     repo: https://github.com/seu-usuario/VitalGest
     branch: main
-    buildCommand: dotnet publish src/VitalGest.Api/VitalGest.Api.csproj -c Release -o out
+    buildCommand: |
+      dotnet restore
+      dotnet publish src/VitalGest.Api/VitalGest.Api.csproj -c Release -o out
     startCommand: dotnet out/VitalGest.Api.dll
+    plan: standard
+    healthCheckPath: /api/health
     envVars:
       - key: ASPNETCORE_ENVIRONMENT
         value: Production
+      - key: PORT
+        value: "5000"
       - key: ConnectionStrings__DefaultConnection
         fromDatabase:
           name: vitalgest-db
@@ -24,13 +31,24 @@ services:
         value: VitalGest
       - key: Jwt__Audience
         value: vitalgest-api
+      - key: Jwt__ExpireMinutes
+        value: "120"
+      - key: Jwt__RefreshTokenExpireDays
+        value: "7"
+    autoDeploy: true
 
+  # Redis Cache
   - type: redis
     name: vitalgest-redis
     plan: free
+    ipAllowList:
+      - source: 0.0.0.0/0
+        description: Allow all
 
 databases:
+  # PostgreSQL
   - name: vitalgest-db
-    plan: free
+    plan: starter
     databaseName: vitalgest_prod
-    user: vitalgest_user
+    user: vitalgest_admin
+    postgresMajorVersion: 16
