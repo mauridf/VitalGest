@@ -1,40 +1,33 @@
 ﻿using System.Reflection;
-using AutoMapper;
-using AutoMapper.Configuration;
 using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using VitalGest.Application.Mappings;
+using VitalGest.Application.Interfaces;
+using VitalGest.Application.Services;
 
 namespace VitalGest.Application.DependencyInjection;
 
-/// <summary>
-/// Registra todos os serviços da camada de Aplicação no container DI.
-/// </summary>
 public static class ApplicationServiceRegistration
 {
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
         // ===== AutoMapper =====
-        services.AddSingleton<IMapper>(sp =>
-        {
-            var loggerFactory = sp.GetRequiredService<ILoggerFactory>();
-            var config = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<MappingProfile>();
-            }, loggerFactory);
-            config.AssertConfigurationIsValid();
-            return config.CreateMapper();
-        });
+        services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
         // ===== FluentValidation =====
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+        services.AddFluentValidationAutoValidation(options =>
+        {
+            options.DisableDataAnnotationsValidation = true;
+        });
 
         // ===== Serviços de Aplicação =====
-        // Serão registrados na FASE 7
-        // services.AddScoped<IAuthService, AuthService>();
-        // services.AddScoped<IClinicService, ClinicService>();
-        // ... etc
+        services.AddScoped<ITokenService, TokenService>();
+        services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<IClinicService, ClinicService>();
+        services.AddScoped<IPatientService, PatientService>();
+        services.AddScoped<IAppointmentService, AppointmentService>();
+        services.AddScoped<IScheduleService, ScheduleService>();
 
         return services;
     }
